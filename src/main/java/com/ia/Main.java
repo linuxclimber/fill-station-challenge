@@ -54,7 +54,7 @@ public class Main {
         String coordinate = input.nextLine();
         if (!isValidCoordinateFormat(coordinate)) {
             System.out.println("Invalid coordinate!  Coordinate must be in the form (x,y)");
-            System.exit(-1);
+            System.exit(0);
         }
 
         //Extract coordinates from input string
@@ -65,7 +65,7 @@ public class Main {
 
         if (!coordinateIsInMapRange(inputCoordinate)) {
             System.out.println("Invalid coordinate!  Coordinate must be within map range of -10 to +10 on both X and Y axis");
-            System.exit(-2);
+            System.exit(0);
         }
 
         //
