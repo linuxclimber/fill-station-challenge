@@ -21,7 +21,7 @@ public class CentralFillStation {
             throw new NoSuchElementException("No medications currently at fill center");
         }
 
-        //Compare based on price in US cents
+        //Compare based on price in US cents for accuracy/simplicity
         Comparator<Map.Entry<Medication, Price>> comp =
                 Comparator.comparing((Map.Entry<Medication, Price> entry)->entry.getValue().getPriceInUSCents());
 

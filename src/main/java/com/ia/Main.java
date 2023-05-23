@@ -24,6 +24,7 @@ public class Main {
     private static final int MIN_STATIONS = 5;
     private static final int MAX_STATIONS = 50;
     private static final int MAX_PRICE_IN_CENTS = 50000; //$500
+    private static final String CLOSEST_FILL_MESSAGE_FORMAT = "Central Fill %03d - %s, %s, Distance %d";
 
 
     public static void main(String[] args) {
@@ -56,6 +57,7 @@ public class Main {
             System.exit(-1);
         }
 
+        //Extract coordinates from input string
         String[] splitStr = coordinate.split(",");
         String xCoordinate = splitStr[0].replace("(", "").trim();
         String yCoordinate = splitStr[1].replace(")", "").trim();
@@ -66,33 +68,32 @@ public class Main {
             System.exit(-2);
         }
 
-
+        //
         List<FillStationDistanceDTO> closestStations =
                 map.getClosestFillStationsToLocation(NUMBER_OF_STATIONS_TO_RETRIEVE, inputCoordinate);
         System.out.println(String.format("Closest Central Fills to (%s,%s): ", xCoordinate, yCoordinate));
+
         for (FillStationDistanceDTO fillStationDto : closestStations) {
             CentralFillStation station = fillStationDto.getFillStation();
-            int distance = fillStationDto.getDistanceFromPoint();
             Map.Entry<Medication, Price> cheapestMed = station.getCheapestMedication();
+
+            int distance = fillStationDto.getDistanceFromPoint();
+
             String medicationName = cheapestMed.getKey().getMedicationName();
             String medicationPrice = cheapestMed.getValue().getFormattedPriceInUSD();
 
-            String formatStr = "Central Fill %03d - %s, %s, Distance %d";
-            System.out.println(String.format(formatStr, station.getFillStationId(), medicationPrice, medicationName, distance));
+            System.out.println(String.format(CLOSEST_FILL_MESSAGE_FORMAT,
+                    station.getFillStationId(),
+                    medicationPrice,
+                    medicationName,
+                    distance));
         }
 
     }
 
-    public static boolean coordinateIsInMapRange(Point coordinate) {
-        return ((coordinate.x >= X_MIN && coordinate.x <= X_MAX)
-                && (coordinate.y >= Y_MIN && coordinate.y <= Y_MAX)
-        );
-    }
 
-    public static boolean isValidCoordinateFormat(String coordinate) {
-        String coordinateRegex = "^\\s*\\(\\s*-?[0-9]+\\s*,\\s*-?[0-9]+\\s*\\)\\s*$";
-        return Pattern.matches(coordinateRegex, coordinate);
-    }
+
+
 
 
     public static ArrayList<Medication> generateMedList(int minSize, int maxSize) {
@@ -129,5 +130,18 @@ public class Main {
         }
 
         return fillStationList;
+    }
+
+
+    public static boolean isValidCoordinateFormat(String coordinate) {
+        //Regex matches coordinates in the format (x,y) with whitespace allowed (trimmed out when getting values)
+        String coordinateRegex = "^\\s*\\(\\s*-?[0-9]+\\s*,\\s*-?[0-9]+\\s*\\)\\s*$";
+        return Pattern.matches(coordinateRegex, coordinate);
+    }
+
+    public static boolean coordinateIsInMapRange(Point coordinate) {
+        return ((coordinate.x >= X_MIN && coordinate.x <= X_MAX)
+                && (coordinate.y >= Y_MIN && coordinate.y <= Y_MAX)
+        );
     }
 }

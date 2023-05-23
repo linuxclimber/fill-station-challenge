@@ -29,6 +29,7 @@ class WorldMapTest {
 
     @Test
     void getClosestFillStationsToLocation() {
+        //TODO: Add more detailed tests to cover actual values being returned and not just size
         WorldMap map = new WorldMap(-10, -10, 10, 10);
         List<FillStationDistanceDTO> closestStations = map.getClosestFillStationsToLocation(3, new Point(0,0));
         assertEquals(0, closestStations.size());

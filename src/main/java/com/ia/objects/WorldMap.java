@@ -11,11 +11,11 @@ import java.util.List;
 @Getter
 @Setter
 public class WorldMap {
+    private HashMap<Point, CentralFillStation> fillStations;
     private int xMin;
     private int xMax;
     private int yMin;
     private int yMax;
-    private HashMap<Point, CentralFillStation> fillStations;
 
     public WorldMap(int xMin, int yMin, int xMax, int yMax) {
         this.xMin = xMin;
@@ -35,10 +35,13 @@ public class WorldMap {
 
     public List<FillStationDistanceDTO> getClosestFillStationsToLocation(int numberOfStations, Point location) {
         Comparator<FillStationDistanceDTO> comp =
-                Comparator.comparing((FillStationDistanceDTO stationDistanceDto)
-                        ->stationDistanceDto.getDistanceFromPoint()).reversed();
+                Comparator.comparing(FillStationDistanceDTO::getDistanceFromPoint).reversed();
 
-        PriorityQueue<FillStationDistanceDTO> closestStations = new PriorityQueue<FillStationDistanceDTO>(numberOfStations, comp);
+        //Iterate over stations list once to find lowest X distances
+        //Store lowest values in priority queue weighted with largest distance at head of queue
+        //Compare each value against the head of the queue and if it is smaller, insert the new value and
+        //remove the head to return the queue to the proper size
+        PriorityQueue<FillStationDistanceDTO> closestStations = new PriorityQueue<>(numberOfStations, comp);
         for (Point currPoint : fillStations.keySet()) {
             int currDistance = calculateManhattanDistance(currPoint, location);
 
@@ -51,6 +54,7 @@ public class WorldMap {
                 closestStations.add(newEntry);
             }
 
+            //Remove highest values from priority queue until requested size is reached
             while (closestStations.size() > numberOfStations) {
                 closestStations.poll();
             }
