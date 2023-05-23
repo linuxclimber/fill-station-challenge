@@ -51,16 +51,21 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
         System.out.println("Please Input Coordinates: ");
-        //String coordinate = input.nextLine();
-        String coordinate = "(0,0)";
+        String coordinate = input.nextLine();
         if (!isValidCoordinateFormat(coordinate)) {
             System.out.println("Invalid coordinate!  Coordinate must be in the form (x,y): ");
             System.exit(-1);
         }
 
+        String[] splitStr = coordinate.split(",");
+        String xCoordinate = splitStr[0].trim().substring(1);
+        String yCoordinate = splitStr[1].trim().substring(0, 1);
+        Point inputCoordinate = new Point(Integer.valueOf(xCoordinate), Integer.valueOf(yCoordinate));
+
+
         List<FillStationDistanceDTO> closestStations =
-                map.getClosestFillStationsToLocation(NUMBER_OF_STATIONS_TO_RETRIEVE, new Point(0,0));
-        System.out.println("Closest Central Fills to (0,0): ");
+                map.getClosestFillStationsToLocation(NUMBER_OF_STATIONS_TO_RETRIEVE, inputCoordinate);
+        System.out.println(String.format("Closest Central Fills to (%s,%s): ", xCoordinate, yCoordinate));
         for (FillStationDistanceDTO fillStationDto : closestStations) {
             CentralFillStation station = fillStationDto.getFillStation();
             int distance = fillStationDto.getDistanceFromPoint();
