@@ -61,7 +61,7 @@ public class Main {
         String[] splitStr = coordinate.split(",");
         String xCoordinate = splitStr[0].replace("(", "").trim();
         String yCoordinate = splitStr[1].replace(")", "").trim();
-        Point inputCoordinate = new Point(Integer.valueOf(xCoordinate), Integer.valueOf(yCoordinate));
+        Point inputCoordinate = new Point(Integer.parseInt(xCoordinate), Integer.parseInt(yCoordinate));
 
         if (!coordinateIsInMapRange(inputCoordinate)) {
             System.out.println("Invalid coordinate!  Coordinate must be within map range of -10 to +10 on both X and Y axis");
@@ -100,7 +100,7 @@ public class Main {
         final String MEDICATION_NAMES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int totalMeds = new Random().nextInt(minSize, maxSize);
 
-        ArrayList<Medication> medList = new ArrayList<Medication>();
+        ArrayList<Medication> medList = new ArrayList<>();
         for (int i = 0; i < totalMeds; i++) {
             Medication newMed = new Medication("Medication " + MEDICATION_NAMES.charAt(i));
             medList.add(newMed);
@@ -114,7 +114,7 @@ public class Main {
         int totalFillStations = new Random().nextInt(minSize, maxSize);
         int maxMeds = availableMeds.size();
 
-        ArrayList<CentralFillStation> fillStationList = new ArrayList<CentralFillStation>();
+        ArrayList<CentralFillStation> fillStationList = new ArrayList<>();
         for (int i = 0; i < totalFillStations; i++) {
             CentralFillStation newFillStation = new CentralFillStation(i);
 
