@@ -11,13 +11,13 @@ import java.util.List;
 @Getter
 @Setter
 public class WorldMap {
-    private long xMin;
-    private long xMax;
-    private long yMin;
-    private long yMax;
+    private int xMin;
+    private int xMax;
+    private int yMin;
+    private int yMax;
     private HashMap<Point, CentralFillStation> fillStations;
 
-    public WorldMap(long xMin, long yMin, long xMax, long yMax) {
+    public WorldMap(int xMin, int yMin, int xMax, int yMax) {
         this.xMin = xMin;
         this.yMin = yMin;
         this.xMax = xMax;
@@ -38,17 +38,17 @@ public class WorldMap {
                 Comparator.comparing((FillStationDistanceDTO stationDistanceDto)
                         ->stationDistanceDto.getDistanceFromPoint()).reversed();
 
-        PriorityQueue<FillStationDistanceDTO> closestStations = new PriorityQueue(numberOfStations, comp);
+        PriorityQueue<FillStationDistanceDTO> closestStations = new PriorityQueue<FillStationDistanceDTO>(numberOfStations, comp);
         for (Point currPoint : fillStations.keySet()) {
-            double currDistance = currPoint.distance(location);
-            System.out.println("Point: " + currPoint.toString() + " distance: " + currDistance); //TODO: Remove/cleanup after testing
+            int currDistance = calculateManhattanDistance(currPoint, location);
+            System.out.println("Point: " + currPoint + " distance: " + currDistance); //TODO: Remove/cleanup after testing
 
             FillStationDistanceDTO newEntry = new FillStationDistanceDTO();
             newEntry.setFillStation(fillStations.get(currPoint));
             newEntry.setDistanceFromPoint(currDistance);
 
             if (numberOfStations > closestStations.size()
-                    || currDistance < closestStations.peek().getDistanceFromPoint()) {
+                    || ((closestStations.peek() != null) && currDistance < closestStations.peek().getDistanceFromPoint())) {
                 closestStations.add(newEntry);
             }
 
@@ -65,5 +65,9 @@ public class WorldMap {
         System.out.println("====================");
 
         return closestStations.stream().toList();
+    }
+
+    private int calculateManhattanDistance(Point currPoint, Point location) {
+        return Math.abs(currPoint.x - location.x) + Math.abs(currPoint.y - location.y);
     }
 }

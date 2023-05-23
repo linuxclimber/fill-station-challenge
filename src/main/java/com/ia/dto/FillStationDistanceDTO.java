@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class FillStationDistanceDTO {
     private CentralFillStation fillStation;
-    private double distanceFromPoint;
+    private int distanceFromPoint;
 }
