@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 
 public class Main {
-    //TODO: These should be moved to a separate config file ideally
+    //TODO: These values should be moved to a separate config file ideally
     private static final int X_MIN = -10;
     private static final int Y_MIN = -10;
     private static final int X_MAX = 10;
@@ -27,11 +27,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        //Randomly Generate Medication List
+        //Randomly Generate Medications, Fill Stations, and Prices
         ArrayList<Medication> generatedMeds = generateMedList(MIN_MEDICATIONS, MAX_MEDICATIONS);
         ArrayList<CentralFillStation> generatedFillStations =
                 generateFillStations(generatedMeds, MIN_STATIONS, MAX_STATIONS);
         WorldMap map = new WorldMap(X_MIN, Y_MIN, X_MAX, Y_MAX);
+
+        //Attempt to assign each fill station a random location on the map
         for (CentralFillStation fillStation : generatedFillStations) {
             int x_coord = new Random().nextInt(X_MIN, X_MAX+1);
             int y_coord = new Random().nextInt(Y_MIN, Y_MAX+1);
@@ -39,23 +41,30 @@ public class Main {
             try {
                 map.addFillStationToMap(location, fillStation);
             } catch (IllegalArgumentException e) {
-                //Fill station already exists at this location so skip adding this station and move on
+                //TODO: Fill station already exists at this location- currently just skipping/continuing
+                //      but ideally should probably retry/assign it a different location
                 continue;
             }
         }
 
+        //Get User Input and do some basic validation
         Scanner input = new Scanner(System.in);
         System.out.println("Please Input Coordinates: ");
         String coordinate = input.nextLine();
         if (!isValidCoordinateFormat(coordinate)) {
-            System.out.println("Invalid coordinate!  Coordinate must be in the form (x,y): ");
+            System.out.println("Invalid coordinate!  Coordinate must be in the form (x,y)");
             System.exit(-1);
         }
 
         String[] splitStr = coordinate.split(",");
-        String xCoordinate = splitStr[0].trim().substring(1);
-        String yCoordinate = splitStr[1].trim().substring(0, 1);
+        String xCoordinate = splitStr[0].replace("(", "").trim();
+        String yCoordinate = splitStr[1].replace(")", "").trim();
         Point inputCoordinate = new Point(Integer.valueOf(xCoordinate), Integer.valueOf(yCoordinate));
+
+        if (!coordinateIsInMapRange(inputCoordinate)) {
+            System.out.println("Invalid coordinate!  Coordinate must be within map range of -10 to +10 on both X and Y axis");
+            System.exit(-2);
+        }
 
 
         List<FillStationDistanceDTO> closestStations =
@@ -72,6 +81,12 @@ public class Main {
             System.out.println(String.format(formatStr, station.getFillStationId(), medicationPrice, medicationName, distance));
         }
 
+    }
+
+    public static boolean coordinateIsInMapRange(Point coordinate) {
+        return ((coordinate.x >= X_MIN && coordinate.x <= X_MAX)
+                && (coordinate.y >= Y_MIN && coordinate.y <= Y_MAX)
+        );
     }
 
     public static boolean isValidCoordinateFormat(String coordinate) {

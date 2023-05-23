@@ -22,7 +22,7 @@ public class WorldMap {
         this.yMin = yMin;
         this.xMax = xMax;
         this.yMax = yMax;
-        this.fillStations = new HashMap<Point, CentralFillStation>();
+        this.fillStations = new HashMap<>();
     }
 
     public void addFillStationToMap(Point location, CentralFillStation station) {
@@ -41,7 +41,6 @@ public class WorldMap {
         PriorityQueue<FillStationDistanceDTO> closestStations = new PriorityQueue<FillStationDistanceDTO>(numberOfStations, comp);
         for (Point currPoint : fillStations.keySet()) {
             int currDistance = calculateManhattanDistance(currPoint, location);
-            System.out.println("Point: " + currPoint + " distance: " + currDistance); //TODO: Remove/cleanup after testing
 
             FillStationDistanceDTO newEntry = new FillStationDistanceDTO();
             newEntry.setFillStation(fillStations.get(currPoint));
