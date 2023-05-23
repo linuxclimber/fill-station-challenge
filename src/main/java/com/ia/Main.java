@@ -6,12 +6,10 @@ import com.ia.objects.Medication;
 import com.ia.objects.Price;
 import com.ia.objects.WorldMap;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 
 public class Main {
@@ -41,9 +39,6 @@ public class Main {
             try {
                 map.addFillStationToMap(location, fillStation);
             } catch (IllegalArgumentException e) {
-                //TODO: remove after testing
-                System.out.println("Station already exists here: " + location.toString());
-                System.out.println("Skipping: " + fillStation.getFillStationId());
                 //Fill station already exists at this location so skip adding this station and move on
                 continue;
             }
@@ -93,7 +88,6 @@ public class Main {
         for (int i = 0; i < totalMeds; i++) {
             Medication newMed = new Medication("Medication " + MEDICATION_NAMES.charAt(i));
             medList.add(newMed);
-            //System.out.println("Added: " + newMed.getMedicationName()); //TODO: Remove on cleanup- testing
         }
 
         return medList;
@@ -117,11 +111,6 @@ public class Main {
             }
 
             fillStationList.add(newFillStation);
-            //TODO: Remove after test runs
-            System.out.println("Station: " + newFillStation.getFillStationId());
-            System.out.println("Cheapest Med: " + newFillStation.getCheapestMedication().getKey().getMedicationName());
-            System.out.println("Cheapest Price: " + newFillStation.getCheapestMedication().getValue().getFormattedPriceInUSD());
-
         }
 
         return fillStationList;

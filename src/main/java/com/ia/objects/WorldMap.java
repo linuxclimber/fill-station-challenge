@@ -57,13 +57,6 @@ public class WorldMap {
             }
         }
 
-        //TODO: Remove after testing
-        System.out.println("Closest Stations:");
-        for (FillStationDistanceDTO stationDTO : closestStations) {
-            System.out.println("Station: " + stationDTO.getFillStation().getFillStationId());
-        }
-        System.out.println("====================");
-
         return closestStations.stream().toList();
     }
 
